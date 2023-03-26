@@ -1,0 +1,49 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'gopro-util'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=gopro-util",
+                    "--package=gopro-util"
+                ],
+                "filter": {
+                    "name": "gopro-util",
+                    "kind": "bin"
+                }
+            },
+            "args": ["-g", "test_data", "-o output"],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "RUST_BACKTRACE": "1"
+            }
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'gopro-util'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=gopro-util",
+                    "--package=gopro-util"
+                ],
+                "filter": {
+                    "name": "gopro-util",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
