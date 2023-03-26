@@ -2,10 +2,13 @@
 name = "gopro-chaptered-video-assembler"
 version = "0.1.0"
 edition = "2021"
-author = "Aaron Lichtman"
-about = "Assembles all chaptered GoPro video files in a directory into 'complete' files."
-license = "MIT"
+authors = ["Aaron Lichtman"]
+description = "Assembles all chaptered GoPro video files in a directory into 'complete' files."
+license-file = "LICENSE"
+homepage = "https://github.com/alichtman/gopro-chaptered-video-assembler"
 repository = "https://github.com/alichtman/gopro-chaptered-video-assembler"
+readme = "README.md"
+keywords = ["gopro", "video", "assembler", "chaptered", "ffmpeg"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
