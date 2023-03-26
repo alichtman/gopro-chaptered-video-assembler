@@ -1,11 +1,35 @@
-# GoPro Chaptered Video Combiner
+# GoPro Chaptered Video Assembler
 
-When you record long videos on GoPro, the videos get split into 4GB chunks.
+When you record long-form videos on a GoPro, the videos get split into 4GB chunks. In the [file naming conventions spec](https://community.gopro.com/s/article/GoPro-Camera-File-Naming-Convention?language=en_US), GoPro refers to these as chaptered video files.
 
-https://community.gopro.com/s/article/GoPro-Camera-File-Naming-Convention?language=en_US
+The general format is:
 
-etc etc etc
+```
+GXYYZZZZ.mp4, where:
+ X is the encoding type (X for HEVC, H for AVC .... yes, I know)
+  YY is the chapter number
+    ZZZZ is the video number
+```
 
+Here is an example GoPro video (about ~10min long) that was split into three chapters.
+
+```
+ test_data
+├──  GX010119.MP4 -- 3.7GB
+├──  GX020119.MP4 -- 3.7GB
+└──  GX030119.MP4 -- 3.7GB
+```
+
+After being combined, using the `concat demuxer` method detailed [here](https://stackoverflow.com/a/11175851), the output file is: `GoPro_119.mp4`, sized at 10GB.
+
+## Which models are supported?
+
+- HERO11 Black / Black Mini
+- HERO10 Black
+- HERO9 Black
+- HERO8 Black
+- HERO7 (White, Silver, Black)
+- HERO6 Black
 
 ## Installation
 
