@@ -1,9 +1,11 @@
 [package]
-name = "gopro-util"
+name = "gopro-chaptered-video-assembler"
 version = "0.1.0"
 edition = "2021"
 author = "Aaron Lichtman"
-about = "Concatenate all sequential GoPro video files in a directory"
+about = "Assembles all chaptered GoPro video files in a directory into 'complete' files."
+license = "MIT"
+repository = "https://github.com/alichtman/gopro-chaptered-video-assembler"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

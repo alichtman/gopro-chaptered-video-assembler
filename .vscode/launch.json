@@ -8,19 +8,19 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'gopro-util'",
+            "name": "Debug executable 'gopro-chaptered-video-assembler'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=gopro-util",
-                    "--package=gopro-util"
+                    "--bin=gopro-chaptered-video-assembler",
+                    "--package=gopro-chaptered-video-assembler"
                 ],
                 "filter": {
-                    "name": "gopro-util",
+                    "name": "gopro-chaptered-video-assembler",
                     "kind": "bin"
                 }
             },
-            "args": ["-g", "test_data", "-o output"],
+            "args": ["-i", "test_data", "-o", "output"],
             "cwd": "${workspaceFolder}",
             "env": {
                 "RUST_BACKTRACE": "1"
@@ -29,16 +29,16 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'gopro-util'",
+            "name": "Debug unit tests in executable 'gopro-chaptered-video-assembler'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=gopro-util",
-                    "--package=gopro-util"
+                    "--bin=gopro-chaptered-video-assembler",
+                    "--package=gopro-chaptered-video-assembler"
                 ],
                 "filter": {
-                    "name": "gopro-util",
+                    "name": "gopro-chaptered-video-assembler",
                     "kind": "bin"
                 }
             },

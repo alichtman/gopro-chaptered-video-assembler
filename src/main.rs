@@ -7,7 +7,7 @@ mod gopro;
 mod logging;
 mod printing;
 use crate::logging::initialize_logging;
-use crate::cli::validate_args;
+use crate::cli::{validate_args};
 use crate::ffmpeg::concatenate_mp4s_from_demuxer_file;
 use crate::filesystem::{append_path_to_demux_input_file, get_files_in_directory, read_lines};
 use crate::gopro::{parse_gopro_file, GoProChapteredVideoFile};
@@ -15,7 +15,7 @@ use crate::printing::print_box_header;
 use std::fs::create_dir_all;
 
 use colored::Colorize;
-use log::{info, warn, error};
+use log::{info, error};
 use std::path::PathBuf;
 use std::process;
 
@@ -23,30 +23,31 @@ use std::process;
 // TODO: Configure logging file to XDG Cache directory
 
 fn header() {
-    let name = format!("GoPro Utility {}", env!("CARGO_PKG_VERSION"));
+    let name = format!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
     print_box_header(name);
 }
 
 fn main() {
     initialize_logging();
     header();
+
     let args = validate_args();
-    let directory = args.gopro_video_dir.unwrap();
-    let files = filesystem::get_files_in_directory(directory.to_str().unwrap());
-    if files.is_empty() {
+    let input_dir = args.input_dir.unwrap();
+    let input_files = filesystem::get_files_in_directory(input_dir.to_str().unwrap());
+    if input_files.is_empty() {
         error!(
             "{} {}",
             "No files found in directory: ".red().bold(),
-            directory.to_str().unwrap()
+            input_dir.to_str().unwrap()
         );
         process::exit(1);
     } else {
-        info!("Found {} files in directory: {}", files.len(), directory.to_str().unwrap());
+        info!("Found {} files in directory: {}", input_files.len(), input_dir.to_str().unwrap());
     }
 
     // Extract data for each video file
     let mut videos: Vec<GoProChapteredVideoFile> = Vec::new();
-    for file in files {
+    for file in input_files {
         let gopro_file_metadata: GoProChapteredVideoFile = parse_gopro_file(file);
         info!("Parsed GoPro Video File: {}", gopro_file_metadata);
         videos.push(gopro_file_metadata);

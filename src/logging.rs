@@ -2,8 +2,6 @@ extern crate xdg;
 extern crate log;
 use log::*;
 use simplelog::*;
-use xdg::BaseDirectories;
-
 use std::fs::File;
 
 const PROGRAM_NAME: &str = env!("CARGO_PKG_NAME");

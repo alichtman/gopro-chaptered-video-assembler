@@ -132,7 +132,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "gopro-util"
+name = "gopro-chaptered-video-assembler"
 version = "0.1.0"
 dependencies = [
  "clap",
