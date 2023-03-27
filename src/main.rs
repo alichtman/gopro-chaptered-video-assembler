@@ -6,16 +6,16 @@ mod filesystem;
 mod gopro;
 mod logging;
 mod printing;
-use crate::logging::initialize_logging;
-use crate::cli::{validate_args};
+use crate::cli::validate_args;
 use crate::ffmpeg::concatenate_mp4s_from_demuxer_file;
 use crate::filesystem::{append_path_to_demux_input_file, get_files_in_directory, read_lines};
 use crate::gopro::{parse_gopro_file, GoProChapteredVideoFile};
+use crate::logging::initialize_logging;
 use crate::printing::print_box_header;
 use std::fs::create_dir_all;
 
 use colored::Colorize;
-use log::{info, error};
+use log::{error, info};
 use std::path::PathBuf;
 use std::process;
 
@@ -42,7 +42,11 @@ fn main() {
         );
         process::exit(1);
     } else {
-        info!("Found {} files in directory: {}", input_files.len(), input_dir.to_str().unwrap());
+        info!(
+            "Found {} files in directory: {}",
+            input_files.len(),
+            input_dir.to_str().unwrap()
+        );
     }
 
     // Extract data for each video file
@@ -76,7 +80,14 @@ fn main() {
         }
     }
 
-    let output_dir = PathBuf::from(args.output_dir.unwrap().as_os_str().to_str().unwrap().trim());
+    let output_dir = PathBuf::from(
+        args.output_dir
+            .unwrap()
+            .as_os_str()
+            .to_str()
+            .unwrap()
+            .trim(),
+    );
     create_dir_all(output_dir.clone()).expect("Failed to create output dir");
 
     let input_files = get_files_in_directory(concat_demuxer_input_files_dir.to_str().unwrap());
@@ -89,9 +100,11 @@ fn main() {
         output_file_name.push(video_number);
         output_file_name.set_extension("mp4");
         info!("Concat Demuxer Input file: {:?}", concat_demuxer_input_file);
-        println!("Creating output file {} from:", output_file_name.to_string_lossy().blue().bold());
-        if let Ok(lines) = read_lines(concat_demuxer_input_file.clone())
-        {
+        println!(
+            "Creating output file {} from:",
+            output_file_name.to_string_lossy().blue().bold()
+        );
+        if let Ok(lines) = read_lines(concat_demuxer_input_file.clone()) {
             for line in lines {
                 if let Ok(l) = line {
                     println!("{}", l.green().bold());

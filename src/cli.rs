@@ -5,7 +5,11 @@ use std::{path::PathBuf, process};
 use clap::Parser;
 
 #[derive(Parser)]
-#[clap(author = "Aaron Lichtman", version, about="Assembles all chaptered GoPro video files in a directory into 'complete' files.\nWritten by: Aaron Lichtman\nSource: https://github.com/alichtman/gopro-chaptered-video-assembler")]
+#[clap(
+    author = "Aaron Lichtman",
+    version,
+    about = "Assembles all chaptered GoPro video files in a directory into 'complete' files.\nWritten by: Aaron Lichtman\nSource: https://github.com/alichtman/gopro-chaptered-video-assembler"
+)]
 pub struct Cli {
     /// Directory to parse video files from
     #[arg(short, long, value_name = "DIRECTORY")]

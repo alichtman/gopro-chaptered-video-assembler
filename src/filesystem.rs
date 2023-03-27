@@ -1,8 +1,8 @@
 extern crate colored;
 // extern crate uuid;
 use colored::*;
-use std::fs::{create_dir_all, OpenOptions, File};
-use std::io::{Error, Write, self, BufRead};
+use std::fs::{create_dir_all, File, OpenOptions};
+use std::io::{self, BufRead, Error, Write};
 use std::path::{Path, PathBuf};
 use std::process;
 use uuid::Uuid;
@@ -48,11 +48,12 @@ pub fn create_temp_dir() -> PathBuf {
     PathBuf::from(temp_dir)
 }
 
-
 // The output is wrapped in a Result to allow matching on errors
 // Returns an Iterator to the Reader of the lines of the file.
 pub fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
-where P: AsRef<Path>, {
+where
+    P: AsRef<Path>,
+{
     let file = File::open(filename)?;
     Ok(io::BufReader::new(file).lines())
 }
