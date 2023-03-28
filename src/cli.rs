@@ -1,10 +1,9 @@
 use colored::Colorize;
-use log::info;
 use std::{path::PathBuf, process};
 
 use clap::Parser;
 
-#[derive(Parser)]
+#[derive(Parser, Clone, Debug)]
 #[clap(
     author = "Aaron Lichtman",
     version,
@@ -18,6 +17,14 @@ pub struct Cli {
     /// Directory to output video files to
     #[arg(short, long, value_name = "DIRECTORY")]
     pub output_dir: Option<PathBuf>,
+
+    /// Dry run. Does not write any files.
+    #[arg(short, long, default_value = "false")]
+    pub dry_run: bool,
+
+    /// Auto-confirm yes to all prompts
+    #[arg(short = 'y', long = "yes", default_value = "false")]
+    pub auto_confirm_yes: bool,
 }
 
 /// Ensures a path is passed.
@@ -43,9 +50,5 @@ pub fn validate_args() -> Cli {
         );
         process::exit(1);
     }
-
-    info!("GoPro video directory: {:?}", args.input_dir);
-    info!("Output directory: {:?}", args.output_dir);
-
     args
 }

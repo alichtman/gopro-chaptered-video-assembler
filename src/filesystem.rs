@@ -57,3 +57,18 @@ where
     let file = File::open(filename)?;
     Ok(io::BufReader::new(file).lines())
 }
+
+pub fn create_dir(path: PathBuf) -> PathBuf {
+    create_dir_all(path.clone()).expect("Failed to create dir");
+    path
+}
+
+pub fn print_file(concat_demuxer_input_file: &PathBuf) {
+    if let Ok(lines) = read_lines(concat_demuxer_input_file.clone()) {
+        for line in lines {
+            if let Ok(l) = line {
+                println!("{}", l.green().bold());
+            }
+        }
+    }
+}

@@ -21,7 +21,10 @@
 // Chaptered videos require concatenation of... all chapters
 
 use std::collections::HashMap;
+use std::io::Error;
 use std::path::PathBuf;
+
+use log::warn;
 
 /// This struct represents the fully concatenated video file we are going to create. This file is
 /// composed of all of the GoProChapteredVideoFiles that have the same video_number.
@@ -33,7 +36,7 @@ pub struct GoProVideo {
 }
 
 /// This struct represents a chaptered GoPro video file (what the camera writes to disk)
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct GoProChapteredVideoFile {
     pub abs_path: PathBuf,
     pub video_number: u16,
@@ -52,25 +55,81 @@ impl std::fmt::Display for GoProChapteredVideoFile {
     }
 }
 
-pub fn parse_gopro_file(path: PathBuf) -> GoProChapteredVideoFile {
+pub fn parse_gopro_file(path: PathBuf) -> Result<GoProChapteredVideoFile, Error> {
     // println!("\n\nParsing file: {:?}", path);
     let filename = path.as_path().file_name().unwrap().to_str().unwrap();
-    let video_number = filename.get(4..8).unwrap();
-    let video_number: u16 = match video_number.parse() {
+    if path.is_dir() {
+        return Err(Error::new(
+            std::io::ErrorKind::InvalidData,
+            format!("{} is a directory", filename),
+        ));
+    }
+    let extension = path
+        .as_path()
+        .extension()
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .to_lowercase();
+    let prefix = filename.get(0..2).unwrap();
+
+    if extension == "jpg" && (prefix == "GO" || prefix == "G0") {
+        return Err(Error::new(
+            std::io::ErrorKind::InvalidData,
+            format!("{} is (likely) a GoPro image", filename),
+        ));
+    }
+    if extension != "mp4" || (prefix != "GH" && prefix != "GX") {
+        return Err(Error::new(
+            std::io::ErrorKind::InvalidData,
+            format!("Invalid file extension or prefix: {}", filename),
+        ));
+    }
+    let video_number: u16 = match filename.get(4..8).unwrap().parse() {
         Ok(v) => v,
-        Err(e) => panic!("Error parsing video number: {}", e),
+        Err(e) => {
+            return Err(Error::new(
+                std::io::ErrorKind::InvalidData,
+                format!(
+                    "Error parsing video number: {filename}
+                n{e}"
+                ),
+            ));
+        }
     };
-    let chapter = filename.get(2..4).unwrap();
-    let chapter: u16 = match chapter.parse() {
+    let chapter: u16 = match filename.get(2..4).unwrap().parse() {
         Ok(v) => v,
-        Err(e) => panic!("Error parsing chapter: {}", e),
+        Err(e) => {
+            return Err(Error::new(
+                std::io::ErrorKind::InvalidData,
+                format!("Error parsing chapter number: {filename}\n{e}"),
+            ));
+        }
     };
 
-    GoProChapteredVideoFile {
+    Ok(GoProChapteredVideoFile {
         abs_path: path.canonicalize().unwrap(),
         video_number,
         chapter,
+    })
+}
+
+pub fn parse_gopro_files_directory(input_files: Vec<PathBuf>) -> Vec<GoProChapteredVideoFile> {
+    let mut videos: Vec<GoProChapteredVideoFile> = Vec::new();
+    for file in input_files {
+        let gopro_file_metadata: GoProChapteredVideoFile = match parse_gopro_file(file) {
+            Ok(gopro_file_metadata) => {
+                // info!("Parsed GoPro Video File: {}", gopro_file_metadata);
+                gopro_file_metadata
+            }
+            Err(e) => {
+                warn!("Failed to parse GoPro video file: {}", e);
+                continue;
+            }
+        };
+        videos.push(gopro_file_metadata);
     }
+    videos
 }
 
 pub fn sort_gopro_files(
@@ -87,4 +146,13 @@ pub fn sort_gopro_files(
     }
 
     video_number_to_subvideos_mapping
+}
+
+pub fn gen_output_path(output_dir: &PathBuf, video_number: u16) -> PathBuf {
+    const GOPRO_FILE_OUTPUT_PREFIX: &str = "GoPro_";
+    PathBuf::from(format!(
+        "{}/{GOPRO_FILE_OUTPUT_PREFIX}{}.mp4",
+        output_dir.to_string_lossy(),
+        video_number
+    ))
 }
