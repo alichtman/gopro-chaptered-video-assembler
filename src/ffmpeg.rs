@@ -3,7 +3,9 @@ use std::process::Command;
 
 use log::{error, info};
 
-pub fn concatenate_mp4s_from_demuxer_file(input_file: PathBuf, output_file: PathBuf) {
+use crate::cli::CliArgs;
+
+pub fn concatenate_mp4s_from_demuxer_file(input_file: PathBuf, output_file: PathBuf, cli: CliArgs) {
     info!(
         "Concatenating mp4s from {} to create {}...",
         input_file.display(),
@@ -21,7 +23,14 @@ pub fn concatenate_mp4s_from_demuxer_file(input_file: PathBuf, output_file: Path
         .arg("-c")
         .arg("copy")
         .arg(output_file);
+    if cli.auto_confirm_yes {
+        command.arg("-y");
+    }
     info!("Running command: {:?}", command);
+    if cli.dry_run {
+        info!("Dry run, skipping ffmpeg command!");
+        return;
+    }
     let output = command.spawn().unwrap().wait_with_output().unwrap();
 
     info!("status: {}", output.status);

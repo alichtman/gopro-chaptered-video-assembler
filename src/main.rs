@@ -6,7 +6,6 @@ mod filesystem;
 mod gopro;
 mod logging;
 mod printing;
-use crate::cli::validate_args;
 use crate::ffmpeg::concatenate_mp4s_from_demuxer_file;
 use crate::filesystem::{append_path_to_demux_input_file, get_files_in_directory, print_file};
 use crate::gopro::{gen_output_path, GoProChapteredVideoFile};
@@ -14,11 +13,13 @@ use crate::logging::initialize_logging;
 use crate::printing::{get_confirmation_before_proceeeding, print_expected_output, print_header};
 use std::fs::rename;
 
-use cli::Cli;
+use clap::Parser;
+use cli::CliArgs;
 use colored::Colorize;
 use filesystem::create_dir;
 use gopro::parse_gopro_files_directory;
 use log::{error, info};
+use printing::print_remove_commands;
 use std::path::PathBuf;
 use std::process;
 
@@ -26,7 +27,7 @@ fn main() {
     initialize_logging();
     print_header();
 
-    let args = validate_args();
+    let args = CliArgs::parse();
     let input_dir = args
         .input_dir
         .clone()
@@ -74,14 +75,19 @@ fn main() {
         }
     }
 
-    combine_multichapter_videos(multichapter_videos_sorted, output_dir.clone(), args.clone());
+    combine_multichapter_videos(
+        multichapter_videos_sorted.clone(),
+        output_dir.clone(),
+        args.clone(),
+    );
     rename_single_chapter_videos(single_chapter_videos, output_dir, args.clone());
+    print_remove_commands(multichapter_videos_sorted);
 }
 
 fn rename_single_chapter_videos(
     single_chapter_videos: std::collections::HashMap<u16, Vec<GoProChapteredVideoFile>>,
     output_dir: PathBuf,
-    args: Cli,
+    args: CliArgs,
 ) {
     for video in single_chapter_videos {
         let video_number = video.0;
@@ -95,15 +101,16 @@ fn rename_single_chapter_videos(
         if args.dry_run {
             info!("Dry run, skipping rename!");
             continue;
+        } else {
+            rename(video_path, output_path).expect("Failed to rename file");
         }
-        rename(video_path, output_path).expect("Failed to rename file");
     }
 }
 
 fn combine_multichapter_videos(
     multichapter_videos_sorted: std::collections::HashMap<u16, Vec<GoProChapteredVideoFile>>,
     output_dir: PathBuf,
-    args: Cli,
+    args: CliArgs,
 ) {
     // Create "concat demux" input files
     info!("Creating \"concat demux\" input files...");
@@ -111,7 +118,6 @@ fn combine_multichapter_videos(
     for video in multichapter_videos_sorted {
         let video_number = video.0;
         for chapter in video.1 {
-
             // If output/GoPro_video_number.txt doesn't exist, create it.
             // Then append the abs_path of the chapter to the file.
             let output_path = gen_output_path(&concat_demuxer_input_files_dir, video_number);
@@ -134,11 +140,10 @@ fn combine_multichapter_videos(
             output_file_name.to_string_lossy().blue().bold()
         );
         print_file(&concat_demuxer_input_file);
-        if args.dry_run {
-            info!("Dry run, skipping ffmpeg execution!");
-            continue;
-        } else {
-            concatenate_mp4s_from_demuxer_file(concat_demuxer_input_file, output_file_name)
-        }
+        concatenate_mp4s_from_demuxer_file(
+            concat_demuxer_input_file,
+            output_file_name,
+            args.clone(),
+        );
     }
 }
