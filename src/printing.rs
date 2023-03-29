@@ -78,7 +78,7 @@ pub fn print_expected_output(
 pub fn print_remove_commands(
     multichapter_videos: std::collections::HashMap<u16, Vec<GoProChapteredVideoFile>>,
 ) {
-    println!("Run the following command to remove the merged chapters");
+    println!("{}", "Run the following command(s) to remove the merged chapters".yellow().bold());
     for (_key, chapters) in multichapter_videos {
         for chapter in chapters {
             println!("rm '{}'", chapter.abs_path.to_str().unwrap().blue().bold());
