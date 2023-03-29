@@ -1,4 +1,4 @@
-use std::{path::PathBuf};
+use std::path::PathBuf;
 
 use clap::Parser;
 
@@ -11,11 +11,11 @@ use clap::Parser;
 pub struct CliArgs {
     /// Directory to parse video files from
     #[arg(short, long, value_name = "DIRECTORY", required = true)]
-    pub input_dir: Option<PathBuf>,
+    pub input: Option<PathBuf>,
 
     /// Directory to output video files to
     #[arg(short, long, value_name = "DIRECTORY", required = true)]
-    pub output_dir: Option<PathBuf>,
+    pub output: Option<PathBuf>,
 
     /// Dry run. Does not write any files.
     #[arg(short, long, default_value = "false")]
@@ -24,4 +24,8 @@ pub struct CliArgs {
     /// Auto-confirm yes to all prompts
     #[arg(short = 'y', long = "yes", default_value = "false")]
     pub auto_confirm_yes: bool,
+
+    /// Skips renaming single chapter videos
+    #[arg(short = 'n', long = "no-single-chapter-rename", default_value = "false")]
+    pub no_single_chapter_rename: bool,
 }

@@ -45,6 +45,7 @@ pub fn get_confirmation_before_proceeeding(skip_confirmation: bool) -> bool {
 pub fn print_expected_output(
     single_chapter_videos: std::collections::HashMap<u16, Vec<GoProChapteredVideoFile>>,
     multichapter_videos_sorted: std::collections::HashMap<u16, Vec<GoProChapteredVideoFile>>,
+    no_single_chapter_rename: bool,
 ) {
     let mut total_chapters_to_combine = 0;
     let total_videos_to_output = multichapter_videos_sorted.len();
@@ -56,11 +57,22 @@ pub fn print_expected_output(
         total_videos_to_output.to_string().blue().bold(),
         total_chapters_to_combine.to_string().blue().bold()
     );
-    info!("{:#?}", multichapter_videos_sorted);
-    info!(
-        "And {} single chapter videos to move / rename",
-        single_chapter_videos.len().to_string().blue().bold()
-    );
+    if total_videos_to_output > 0 {
+        info!("{:#?}", multichapter_videos_sorted);
+    }
+    if no_single_chapter_rename {
+        info!(
+            "Skipping renaming of {} single chapter video(s)",
+            single_chapter_videos.len().to_string().blue().bold()
+        );
+    } else {
+        info!(
+            "And {} single chapter video(s) to rename",
+            single_chapter_videos.len().to_string().blue().bold()
+        );
+    }
+
+    // TODO: Make sure chapter keys are unique. panic if they aren't
 }
 
 pub fn print_remove_commands(
@@ -69,7 +81,7 @@ pub fn print_remove_commands(
     println!("Run the following command to remove the merged chapters");
     for (_key, chapters) in multichapter_videos {
         for chapter in chapters {
-            println!("rm {}", chapter.abs_path.to_str().unwrap().blue().bold());
+            println!("rm '{}'", chapter.abs_path.to_str().unwrap().blue().bold());
         }
     }
 }

@@ -1,6 +1,8 @@
 extern crate colored;
 // extern crate uuid;
 use colored::*;
+use log::info;
+use normpath::PathExt;
 use std::fs::{create_dir_all, File, OpenOptions};
 use std::io::{self, BufRead, Error, Write};
 use std::path::{Path, PathBuf};
@@ -35,7 +37,8 @@ pub fn append_path_to_demux_input_file(
         .open(target_file)
         .expect("Something went wrong!");
 
-    writeln!(file, "file {}", path_to_append_to_file.to_str().unwrap())?;
+    // TODO: One day this will break when a path with `'` in it is used.
+    writeln!(file, "file '{}'", path_to_append_to_file.to_str().unwrap())?;
     Ok(())
 }
 
@@ -56,6 +59,33 @@ where
 {
     let file = File::open(filename)?;
     Ok(io::BufReader::new(file).lines())
+}
+
+pub fn normalize_and_create_if_needed(path: PathBuf) -> PathBuf {
+    let mut normalized_path = match path.clone().normalize() {
+        Ok(path) => path,
+        Err(_) => {
+            info!(
+                "{} directory does not exist, attempting to create it now...",
+                path.to_string_lossy().blue().bold()
+            );
+            let path = path;
+            let normalized_path = create_dir(path.clone().to_path_buf()).normalize().unwrap();
+            normalized_path
+        }
+    };
+
+    if normalized_path.exists() {
+        info!(
+            "{} directory exists, using it...",
+            normalized_path.as_path().to_string_lossy().blue().bold()
+        );
+        normalized_path = normalized_path
+            .clone()
+            .normalize()
+            .expect("Could not canonicalize output dir path");
+    }
+    normalized_path.into_path_buf()
 }
 
 pub fn create_dir(path: PathBuf) -> PathBuf {

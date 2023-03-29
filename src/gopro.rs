@@ -148,11 +148,10 @@ pub fn sort_gopro_files(
     video_number_to_subvideos_mapping
 }
 
-pub fn gen_output_path(output_dir: &PathBuf, video_number: u16) -> PathBuf {
-    const GOPRO_FILE_OUTPUT_PREFIX: &str = "GoPro_";
-    PathBuf::from(format!(
-        "{}/{GOPRO_FILE_OUTPUT_PREFIX}{}.mp4",
-        output_dir.to_string_lossy(),
-        video_number
-    ))
+// Assumes output_dir is a normalized directory path. Adds GoPro_{}.EXTENSION to the end of the path.
+pub fn gen_output_path(output_dir: &PathBuf, video_number: u16, extension: &str) -> PathBuf {
+    let mut output_path = PathBuf::from(output_dir);
+    output_path.push(format!("GoPro_{}", video_number));
+    output_path.set_extension(extension);
+    output_path
 }

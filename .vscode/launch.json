@@ -7,7 +7,7 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'gopro-chaptered-video-assembler'",
+            "name": "Debug in test",
             "cargo": {
                 "args": [
                     "build",
@@ -20,6 +20,27 @@
                 }
             },
             "args": ["-i", "test_data", "-o", "output"],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "RUST_BACKTRACE": "1"
+            }
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug in prod 'gopro-chaptered-video-assembler'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=gopro-chaptered-video-assembler",
+                    "--package=gopro-chaptered-video-assembler"
+                ],
+                "filter": {
+                    "name": "gopro-chaptered-video-assembler",
+                    "kind": "bin"
+                }
+            },
+            "args": ["-i", "/media/alichtman/Extreme SSD/Rock-Climbing/Gunks + Rumney Sept 2021/Bunny", "-o", "output", "-n"],
             "cwd": "${workspaceFolder}",
             "env": {
                 "RUST_BACKTRACE": "1"

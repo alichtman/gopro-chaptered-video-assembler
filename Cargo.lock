@@ -138,6 +138,7 @@ dependencies = [
  "clap",
  "colored",
  "log",
+ "normpath",
  "simplelog",
  "uuid",
  "xdg",
@@ -217,6 +218,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "abb12e687cfb44aa40f41fc3978ef76448f9b6038cad6aef4259d3c095a2382e"
 dependencies = [
  "cfg-if",
+]
+
+[[package]]
+name = "normpath"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "972dec05f98e7c787ede35d7a9ea4735eb7788c299287352757b3def6cc1f7b5"
+dependencies = [
+ "windows-sys",
 ]
 
 [[package]]
