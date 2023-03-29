@@ -1,6 +1,6 @@
 [package]
 name = "gopro-chaptered-video-assembler"
-version = "0.4.0"
+version = "0.5.0"
 edition = "2021"
 authors = ["Aaron Lichtman"]
 description = "Assembles all chaptered GoPro video files in a directory into 'complete' files."

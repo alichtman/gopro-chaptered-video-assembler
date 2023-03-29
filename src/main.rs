@@ -116,4 +116,3 @@ fn rename_single_chapter_videos(
         }
     }
 }
-

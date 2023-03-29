@@ -26,6 +26,10 @@ pub struct CliArgs {
     pub auto_confirm_yes: bool,
 
     /// Skips renaming single chapter videos
-    #[arg(short = 'n', long = "no-single-chapter-rename", default_value = "false")]
+    #[arg(
+        short = 'n',
+        long = "no-single-chapter-rename",
+        default_value = "false"
+    )]
     pub no_single_chapter_rename: bool,
 }

@@ -1,15 +1,26 @@
-use std::{path::PathBuf, process};
+use core::panic;
 use std::process::Command;
+use std::{path::PathBuf, process};
 
 use colored::Colorize;
 use filetime::set_file_times;
 use log::{error, info};
 use normpath::PathExt;
 
-use crate::filesystem::{print_file, extract_modified_time_from_first_file_in_demuxer_input_file};
-use crate::{cli::CliArgs, gopro::{GoProChapteredVideoFile, gen_output_path}, filesystem::{self, append_path_to_demux_input_file, get_files_in_directory}};
+use crate::filesystem::{get_last_modified_time, print_file};
+use crate::gopro::GoProVideo;
+use crate::{
+    cli::CliArgs,
+    filesystem::{self, append_path_to_demux_input_file},
+    gopro::{gen_output_path, GoProChapteredVideoFile},
+};
 
-pub fn concatenate_mp4s_from_demuxer_file(input_file: PathBuf, output_file: PathBuf, cli: CliArgs, time_to_set: filetime::FileTime) {
+pub fn concatenate_mp4s_from_demuxer_file(
+    input_file: PathBuf,
+    output_file: PathBuf,
+    cli: CliArgs,
+    time_to_set: filetime::FileTime,
+) {
     info!(
         "Concatenating mp4s from {} to create {}...",
         input_file.display(),
@@ -59,20 +70,20 @@ pub fn combine_multichapter_videos(
         info!("{}", "No multichapter videos to combine".blue().bold());
         return;
     }
-    let ffmpeg_demuxer_files_dir = create_ffmpeg_demuxer_input_files(multichapter_videos_sorted);
-
-    let input_files = get_files_in_directory(ffmpeg_demuxer_files_dir.to_str().unwrap());
     // Run ffmpeg concat demuxer on each input file
-    process_ffmpeg_demuxer_input_files(input_files, output_dir, args);
+    let ffmpeg_demuxer_inputs = create_ffmpeg_demuxer_input_files(multichapter_videos_sorted);
+    process_ffmpeg_demuxer_input_files(ffmpeg_demuxer_inputs, output_dir, args);
 }
 
-fn process_ffmpeg_demuxer_input_files(input_files: Vec<PathBuf>, output_dir: PathBuf, args: CliArgs) {
-    for concat_demuxer_input_file in input_files {
-        let video_number = concat_demuxer_input_file
-            .file_prefix()
-            .unwrap()
-            .to_str()
-            .unwrap();
+fn process_ffmpeg_demuxer_input_files(
+    gopro_videos_to_be_demuxed: Vec<GoProVideo>,
+    output_dir: PathBuf,
+    args: CliArgs,
+) {
+    for gopro_video in gopro_videos_to_be_demuxed {
+        let video_number = gopro_video.video_number;
+
+        // This chunk where I generate output_file_name needs to be cleaned up
         let mut output_file_name = match PathBuf::from(output_dir.clone()).normalize() {
             Ok(path) => path,
             Err(e) => {
@@ -80,42 +91,67 @@ fn process_ffmpeg_demuxer_input_files(input_files: Vec<PathBuf>, output_dir: Pat
                 process::exit(1);
             }
         };
-        output_file_name.push(video_number);
+        output_file_name.push(format!("GoPro_{}", video_number.to_string()));
         let mut output_file_name = output_file_name.as_path().to_path_buf();
         output_file_name.set_extension("mp4");
-        info!("Concat Demuxer Input file: {:?}", concat_demuxer_input_file);
+
+        info!(
+            "Concat Demuxer Input file: {:?}",
+            gopro_video.demuxer_input_file
+        );
         println!(
             "Creating output file {} from:",
             output_file_name.to_string_lossy().blue().bold()
         );
-        print_file(&concat_demuxer_input_file);
+        print_file(&gopro_video.demuxer_input_file);
 
-        let last_modified_time = extract_modified_time_from_first_file_in_demuxer_input_file(&concat_demuxer_input_file);
         concatenate_mp4s_from_demuxer_file(
-            concat_demuxer_input_file,
+            gopro_video.demuxer_input_file,
             output_file_name,
             args.clone(),
-            last_modified_time,
+            gopro_video.mtime,
         );
     }
 }
 
-// Returns the path to the directory containing the "concat demux" input files
-fn create_ffmpeg_demuxer_input_files(multichapter_videos_sorted: std::collections::HashMap<u16, Vec<GoProChapteredVideoFile>>) -> PathBuf {
+// Returns a vector of GoProVideos. GoProVideo.demuxer_input_file is the path to the demuxer input file
+fn create_ffmpeg_demuxer_input_files(
+    multichapter_videos_sorted: std::collections::HashMap<u16, Vec<GoProChapteredVideoFile>>,
+) -> Vec<GoProVideo> {
+    let mut gopro_multichapter_videos_to_demux = Vec::<GoProVideo>::new();
     let ffmpeg_demuxer_files_dir = filesystem::create_temp_dir();
-    info!("Creating \"concat demux\" input files in {}...", ffmpeg_demuxer_files_dir.display());
+    info!(
+        "Creating \"concat demux\" input files in {}...",
+        ffmpeg_demuxer_files_dir.display()
+    );
     for video in multichapter_videos_sorted {
         let video_number = video.0;
+        let ffmpeg_demuxer_filepath =
+            gen_output_path(&ffmpeg_demuxer_files_dir, video_number, "demux.txt");
+        let last_modified_time_of_first_chapter = get_last_modified_time(&video.1[0].abs_path);
         for chapter in video.1 {
-            let ffmpeg_demuxer_filepath =
-                gen_output_path(&ffmpeg_demuxer_files_dir, video_number, "demux.txt");
+            let chapter_abs_path = chapter.abs_path.clone();
             info!(
-                "Writing to concat demuxer file: {:?}",
-                ffmpeg_demuxer_filepath
+                "Writing {:?} to concat demuxer file: {:?}",
+                chapter_abs_path,
+                ffmpeg_demuxer_filepath.clone()
             );
-            append_path_to_demux_input_file(ffmpeg_demuxer_filepath, chapter.abs_path)
+
+            // Escape single quotes in path with weird ffmpeg concat demuxer syntax
+            let chapter_abs_path = PathBuf::from(
+                chapter_abs_path
+                    .to_path_buf()
+                    .to_string_lossy()
+                    .replace("'", "'\\''"),
+            );
+            append_path_to_demux_input_file(ffmpeg_demuxer_filepath.clone(), chapter_abs_path)
                 .expect("Failed to write to concat demuxer file: {ffmpeg_demuxer_filepath}");
         }
+        gopro_multichapter_videos_to_demux.push(GoProVideo {
+            video_number,
+            demuxer_input_file: ffmpeg_demuxer_filepath,
+            mtime: last_modified_time_of_first_chapter,
+        })
     }
-    ffmpeg_demuxer_files_dir
+    gopro_multichapter_videos_to_demux
 }

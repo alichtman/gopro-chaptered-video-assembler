@@ -1,15 +1,15 @@
 extern crate colored;
 // extern crate uuid;
 use colored::*;
+use filetime::FileTime;
 use log::info;
 use normpath::PathExt;
+use std::fs;
 use std::fs::{create_dir_all, File, OpenOptions};
 use std::io::{self, BufRead, Error, Write};
 use std::path::{Path, PathBuf};
 use std::process;
 use uuid::Uuid;
-use std::fs;
-use filetime::FileTime;
 
 pub fn get_files_in_directory(path: &str) -> Vec<PathBuf> {
     let mut files: Vec<PathBuf> = Vec::new();
@@ -39,7 +39,6 @@ pub fn append_path_to_demux_input_file(
         .open(target_file)
         .expect("Something went wrong!");
 
-    // TODO: One day this will break when a path with `'` in it is used.
     writeln!(file, "file '{}'", path_to_append_to_file.to_str().unwrap())?;
     Ok(())
 }
@@ -48,7 +47,7 @@ pub fn append_path_to_demux_input_file(
 pub fn create_temp_dir() -> PathBuf {
     let temp_dir = std::env::temp_dir();
     let temp_dir = temp_dir.to_str().unwrap();
-    let temp_dir = format!("{}/gopro_utility/{}", temp_dir, Uuid::new_v4());
+    let temp_dir = format!("{}/{}/{}", temp_dir, env!("CARGO_PKG_NAME"), Uuid::new_v4());
     create_dir_all(temp_dir.clone()).expect("Failed to create temp dir");
     PathBuf::from(temp_dir)
 }
@@ -109,18 +108,4 @@ pub fn get_last_modified_time(path: &PathBuf) -> FileTime {
     let metadata = fs::metadata(path).unwrap();
     let mtime = FileTime::from_last_modification_time(&metadata);
     mtime
-}
-
-pub fn extract_modified_time_from_first_file_in_demuxer_input_file(path: &PathBuf) -> FileTime {
-    if let Ok(lines) = read_lines(path.clone()) {
-        for line in lines {
-            if let Ok(l) = line {
-                let path = l.replace("file '", "").replace("'", "");
-                let path = PathBuf::from(path);
-                let mtime = get_last_modified_time(&path);
-                return mtime
-            }
-        }
-    }
-    panic!("Could not extract modified time from first file in demuxer input file. This error should never happen.")
 }

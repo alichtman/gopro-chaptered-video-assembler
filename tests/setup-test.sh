@@ -8,4 +8,6 @@ fi
 
 rm -rf tests/output tests/working_test_data
 mkdir tests/working_test_data
+mkdir "tests/working_test_data/Test\'s Apostrophe"
 cp -vp tests/real_videos/* tests/working_test_data/
+cp -vp tests/real_videos/* "tests/working_test_data/Test\'s Apostrophe"

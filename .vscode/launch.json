@@ -28,6 +28,27 @@
         {
             "type": "lldb",
             "request": "launch",
+            "name": "Debug in apostrophe",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=gopro-chaptered-video-assembler",
+                    "--package=gopro-chaptered-video-assembler"
+                ],
+                "filter": {
+                    "name": "gopro-chaptered-video-assembler",
+                    "kind": "bin"
+                }
+            },
+            "args": ["-i", "tests/working_test_data/Test's Apostrophe", "-o", "tests/output"],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "RUST_BACKTRACE": "1"
+            }
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
             "name": "Debug unit tests in executable 'gopro-chaptered-video-assembler'",
             "cargo": {
                 "args": [

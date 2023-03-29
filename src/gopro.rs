@@ -24,15 +24,17 @@ use std::collections::HashMap;
 use std::io::Error;
 use std::path::PathBuf;
 
+use filetime::FileTime;
 use log::warn;
 
 /// This struct represents the fully concatenated video file we are going to create. This file is
 /// composed of all of the GoProChapteredVideoFiles that have the same video_number.
 #[derive(Debug)]
 pub struct GoProVideo {
-    pub abs_path: PathBuf,
-    // encoding: Encoding,
+    // pub abs_path: PathBuf,
     pub video_number: u16,
+    pub demuxer_input_file: PathBuf,
+    pub mtime: FileTime,
 }
 
 /// This struct represents a chaptered GoPro video file (what the camera writes to disk)

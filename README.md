@@ -128,6 +128,13 @@ Proceed? (y/n)
 
 The `combined` directory will be created in the current directory, and all output files will be found there.
 
+Additionally, paths with apostrophes (and theoretically other special characters) are supported:
+
+```bash
+$ gopro-chaptered-video-assembler -i "tests/working_test_data/Test\'s Apostrophe"  -o tests/output
+...
+```
+
 ## Which GoPro models are supported?
 
 - HERO11 Black / Black Mini
