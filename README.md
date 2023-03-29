@@ -50,6 +50,18 @@ This package is available on [`crates.io`](https://crates.io/crates/gopro-chapte
 $ cargo install gopro-chaptered-video-assembler
 ```
 
+### Building and Installing Source
+
+```
+$ git clone https://github.com/alichtman/gopro-chaptered-video-assembler
+$ cd gopro-chaptered-video-assembler
+$ cargo build
+$ cargo run -- [ARGUMENTS]
+$ cargo install --path .
+```
+
+Debugging in VSCode works well.
+
 ## Example Usage
 
 ```bash
