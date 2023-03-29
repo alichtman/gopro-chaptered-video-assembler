@@ -38,7 +38,7 @@ The file names aren't the most user friendly. The most common thing I do before 
 
 ## How?
 
-This tool combines multi-chapter videos using the [`ffmpeg concat demuxer` method](https://stackoverflow.com/a/11175851) and renames / moves single chapter videos so the filenames can be parsed more easily. You can disable the single chapter renaming behavior with `--no-single-chapter-rename`.
+This tool combines multi-chapter videos using the [`ffmpeg concat demuxer`](https://stackoverflow.com/a/11175851) and renames single chapter videos so the filenames can be parsed more easily. You can disable the single chapter renaming behavior with `--no-single-chapter-rename`. If a multi-chapter merge operation is done, a set of commands will be printed at the end to clean up the original source directory. These commands are destructive, and have to be run manually.
 
 All output files will have the form: `GoPro_{video_number}.MP4`.
 
