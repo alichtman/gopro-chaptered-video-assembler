@@ -1,3 +1,4 @@
 /target
-test_data
 output
+tests/working_test_data
+tests/real_videos

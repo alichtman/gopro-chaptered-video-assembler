@@ -19,28 +19,7 @@
                     "kind": "bin"
                 }
             },
-            "args": ["-i", "test_data", "-o", "output"],
-            "cwd": "${workspaceFolder}",
-            "env": {
-                "RUST_BACKTRACE": "1"
-            }
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug in prod 'gopro-chaptered-video-assembler'",
-            "cargo": {
-                "args": [
-                    "build",
-                    "--bin=gopro-chaptered-video-assembler",
-                    "--package=gopro-chaptered-video-assembler"
-                ],
-                "filter": {
-                    "name": "gopro-chaptered-video-assembler",
-                    "kind": "bin"
-                }
-            },
-            "args": ["-i", "/media/alichtman/Extreme SSD/Rock-Climbing/Gunks + Rumney Sept 2021/Bunny", "-o", "output", "-n"],
+            "args": ["-i", "tests/working_test_data", "-o", "tests/output"],
             "cwd": "${workspaceFolder}",
             "env": {
                 "RUST_BACKTRACE": "1"

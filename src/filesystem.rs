@@ -8,6 +8,8 @@ use std::io::{self, BufRead, Error, Write};
 use std::path::{Path, PathBuf};
 use std::process;
 use uuid::Uuid;
+use std::fs;
+use filetime::FileTime;
 
 pub fn get_files_in_directory(path: &str) -> Vec<PathBuf> {
     let mut files: Vec<PathBuf> = Vec::new();
@@ -101,4 +103,24 @@ pub fn print_file(concat_demuxer_input_file: &PathBuf) {
             }
         }
     }
+}
+
+pub fn get_last_modified_time(path: &PathBuf) -> FileTime {
+    let metadata = fs::metadata(path).unwrap();
+    let mtime = FileTime::from_last_modification_time(&metadata);
+    mtime
+}
+
+pub fn extract_modified_time_from_first_file_in_demuxer_input_file(path: &PathBuf) -> FileTime {
+    if let Ok(lines) = read_lines(path.clone()) {
+        for line in lines {
+            if let Ok(l) = line {
+                let path = l.replace("file '", "").replace("'", "");
+                let path = PathBuf::from(path);
+                let mtime = get_last_modified_time(&path);
+                return mtime
+            }
+        }
+    }
+    panic!("Could not extract modified time from first file in demuxer input file. This error should never happen.")
 }

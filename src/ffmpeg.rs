@@ -2,13 +2,14 @@ use std::{path::PathBuf, process};
 use std::process::Command;
 
 use colored::Colorize;
+use filetime::set_file_times;
 use log::{error, info};
 use normpath::PathExt;
 
-use crate::filesystem::print_file;
+use crate::filesystem::{print_file, extract_modified_time_from_first_file_in_demuxer_input_file};
 use crate::{cli::CliArgs, gopro::{GoProChapteredVideoFile, gen_output_path}, filesystem::{self, append_path_to_demux_input_file, get_files_in_directory}};
 
-pub fn concatenate_mp4s_from_demuxer_file(input_file: PathBuf, output_file: PathBuf, cli: CliArgs) {
+pub fn concatenate_mp4s_from_demuxer_file(input_file: PathBuf, output_file: PathBuf, cli: CliArgs, time_to_set: filetime::FileTime) {
     info!(
         "Concatenating mp4s from {} to create {}...",
         input_file.display(),
@@ -25,7 +26,7 @@ pub fn concatenate_mp4s_from_demuxer_file(input_file: PathBuf, output_file: Path
         .arg(input_file)
         .arg("-c")
         .arg("copy")
-        .arg(output_file);
+        .arg(output_file.clone());
     if cli.auto_confirm_yes {
         command.arg("-y");
     }
@@ -44,6 +45,8 @@ pub fn concatenate_mp4s_from_demuxer_file(input_file: PathBuf, output_file: Path
         error!("ffmpeg failed to concatenate mp4s from demuxer file");
         panic!("ffmpeg failed to concatenate mp4s from demuxer file");
     }
+
+    set_file_times(output_file.as_path(), time_to_set, time_to_set).unwrap();
 }
 
 // Create "concat demux" input files
@@ -56,24 +59,14 @@ pub fn combine_multichapter_videos(
         info!("{}", "No multichapter videos to combine".blue().bold());
         return;
     }
-    let ffmpeg_demuxer_files_dir = filesystem::create_temp_dir();
-    info!("Creating \"concat demux\" input files in {}...", ffmpeg_demuxer_files_dir.display());
-    for video in multichapter_videos_sorted {
-        let video_number = video.0;
-        for chapter in video.1 {
-            let ffmpeg_demuxer_filepath =
-                gen_output_path(&ffmpeg_demuxer_files_dir, video_number, "demux.txt");
-            info!(
-                "Writing to concat demuxer file: {:?}",
-                ffmpeg_demuxer_filepath
-            );
-            append_path_to_demux_input_file(ffmpeg_demuxer_filepath, chapter.abs_path)
-                .expect("Failed to write to concat demuxer file: {ffmpeg_demuxer_filepath}");
-        }
-    }
+    let ffmpeg_demuxer_files_dir = create_ffmpeg_demuxer_input_files(multichapter_videos_sorted);
 
     let input_files = get_files_in_directory(ffmpeg_demuxer_files_dir.to_str().unwrap());
     // Run ffmpeg concat demuxer on each input file
+    process_ffmpeg_demuxer_input_files(input_files, output_dir, args);
+}
+
+fn process_ffmpeg_demuxer_input_files(input_files: Vec<PathBuf>, output_dir: PathBuf, args: CliArgs) {
     for concat_demuxer_input_file in input_files {
         let video_number = concat_demuxer_input_file
             .file_prefix()
@@ -96,10 +89,33 @@ pub fn combine_multichapter_videos(
             output_file_name.to_string_lossy().blue().bold()
         );
         print_file(&concat_demuxer_input_file);
+
+        let last_modified_time = extract_modified_time_from_first_file_in_demuxer_input_file(&concat_demuxer_input_file);
         concatenate_mp4s_from_demuxer_file(
             concat_demuxer_input_file,
             output_file_name,
             args.clone(),
+            last_modified_time,
         );
     }
+}
+
+// Returns the path to the directory containing the "concat demux" input files
+fn create_ffmpeg_demuxer_input_files(multichapter_videos_sorted: std::collections::HashMap<u16, Vec<GoProChapteredVideoFile>>) -> PathBuf {
+    let ffmpeg_demuxer_files_dir = filesystem::create_temp_dir();
+    info!("Creating \"concat demux\" input files in {}...", ffmpeg_demuxer_files_dir.display());
+    for video in multichapter_videos_sorted {
+        let video_number = video.0;
+        for chapter in video.1 {
+            let ffmpeg_demuxer_filepath =
+                gen_output_path(&ffmpeg_demuxer_files_dir, video_number, "demux.txt");
+            info!(
+                "Writing to concat demuxer file: {:?}",
+                ffmpeg_demuxer_filepath
+            );
+            append_path_to_demux_input_file(ffmpeg_demuxer_filepath, chapter.abs_path)
+                .expect("Failed to write to concat demuxer file: {ffmpeg_demuxer_filepath}");
+        }
+    }
+    ffmpeg_demuxer_files_dir
 }
