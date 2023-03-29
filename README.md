@@ -42,6 +42,14 @@ This tool combines multi-chapter videos using the [`ffmpeg concat demuxer` metho
 
 All output files will have the form: `GoPro_{video_number}.MP4`.
 
+## Installation
+
+This package is available on [`crates.io`](https://crates.io/crates/gopro-chaptered-video-assembler). 
+
+```bash
+$ cargo install gopro-chaptered-video-assembler
+```
+
 ## Example Usage
 
 ```bash
@@ -143,11 +151,3 @@ $ gopro-chaptered-video-assembler -i "tests/working_test_data/Test\'s Apostrophe
 - HERO8 Black
 - HERO7 White / Silver / Black
 - HERO6 Black
-
-## Installation
-
-This package is available on [`crates.io`](https://crates.io/crates/gopro-chaptered-video-assembler). 
-
-```bash
-$ cargo install gopro-chaptered-video-assembler
-```
