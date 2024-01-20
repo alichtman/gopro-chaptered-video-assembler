@@ -8,8 +8,8 @@ The general format is:
 
 ```bash
 GXYYZZZZ.mp4, where:
- X is the encoding type (X for HEVC, H for AVC .... yes... I know)
-  YY is the chapter number
+ X       is the encoding type (X for HEVC, H for AVC .... yes... I know)
+  YY     is the chapter number
     ZZZZ is the video number
 ```
 
