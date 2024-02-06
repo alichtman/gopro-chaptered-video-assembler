@@ -27,9 +27,9 @@ pub struct CliArgs {
 
     /// Skips renaming single chapter videos
     #[arg(
-        short = 'n',
-        long = "no-single-chapter-rename",
+        short = 'c',
+        long = "copy-single-chapter-instead-of-rename",
         default_value = "false"
     )]
-    pub no_single_chapter_rename: bool,
+    pub copy_single_chapter_instead_of_renaming: bool,
 }

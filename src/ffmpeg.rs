@@ -46,7 +46,11 @@ pub fn concatenate_mp4s_from_demuxer_file(
         info!("Dry run, skipping ffmpeg command!");
         return;
     }
-    let output = command.spawn().unwrap().wait_with_output().unwrap();
+    let output = command
+        .spawn()
+        .expect("Command failed to run")
+        .wait_with_output()
+        .expect("Command output failed to be collected");
 
     // if ffmpeg doesn't run successfully, scream and die
     if !output.status.success() {

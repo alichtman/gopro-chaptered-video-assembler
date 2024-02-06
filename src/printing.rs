@@ -45,7 +45,7 @@ pub fn get_confirmation_before_proceeeding(skip_confirmation: bool) -> bool {
 pub fn print_expected_output(
     single_chapter_videos: std::collections::HashMap<u16, Vec<GoProChapteredVideoFile>>,
     multichapter_videos_sorted: std::collections::HashMap<u16, Vec<GoProChapteredVideoFile>>,
-    no_single_chapter_rename: bool,
+    copy_single_chapter_instead_of_renaming: bool,
 ) {
     let mut total_chapters_to_combine = 0;
     let total_videos_to_output = multichapter_videos_sorted.len();
@@ -53,16 +53,16 @@ pub fn print_expected_output(
         total_chapters_to_combine += value.len();
     }
     info!(
-        "Found {} video(s) with {} total chapters to combine",
+        "These make up {} video(s), with {} total chapters to combine",
         total_videos_to_output.to_string().blue().bold(),
         total_chapters_to_combine.to_string().blue().bold()
     );
     if total_videos_to_output > 0 {
         info!("{:#?}", multichapter_videos_sorted);
     }
-    if no_single_chapter_rename {
+    if copy_single_chapter_instead_of_renaming {
         info!(
-            "Skipping renaming of {} single chapter video(s)",
+            "And {} single chapter video(s) to copy",
             single_chapter_videos.len().to_string().blue().bold()
         );
     } else {
@@ -76,7 +76,12 @@ pub fn print_expected_output(
 pub fn print_remove_commands(
     multichapter_videos: std::collections::HashMap<u16, Vec<GoProChapteredVideoFile>>,
 ) {
-    println!("{}", "Run the following command(s) to remove the merged chapters".yellow().bold());
+    println!(
+        "{}",
+        "Run the following command(s) to remove the merged chapters"
+            .yellow()
+            .bold()
+    );
     for (_key, chapters) in multichapter_videos {
         for chapter in chapters {
             println!("rm '{}'", chapter.abs_path.to_str().unwrap().blue().bold());
