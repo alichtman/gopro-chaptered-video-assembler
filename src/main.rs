@@ -27,15 +27,18 @@ fn main() {
     print_header();
     let args = CliArgs::parse();
 
-    // Canonicalize input and output paths up front, creating the output directory if needed.
+    // Canonicalize input path up front. We don't handle the output path until later to avoid creating the output path if the user cancels the operation. 
     let input_dir = args
         .input
         .clone()
         .unwrap()
         .canonicalize()
         .expect("Could not canonicalize input dir path. Does it exist?");
-    let output_dir = normalize_and_create_if_needed(args.output.clone().unwrap());
 
+   actually_do_things_with_input_and_output_paths(input_dir, args);
+}
+
+fn actually_do_things_with_input_and_output_paths(input_dir: PathBuf, args: CliArgs) {
     let input_files = filesystem::get_files_in_directory(input_dir.to_str().unwrap());
     if input_files.is_empty() {
         error!(
@@ -54,6 +57,10 @@ fn main() {
 
     // Extract data for each video file
     let videos = parse_gopro_files_directory(input_files);
+
+    // TODO: Ensure all videos are valid mp4s. (#10)
+    println!("{:?}", videos);
+
     // Sort the videos by video number, preparing them to be "concat demuxed" by ffmpeg https://stackoverflow.com/a/11175851
     let mut multichapter_videos_sorted = gopro::sort_gopro_files(videos);
     // Filter out videos that only have one chapter to be renamed separately
@@ -75,6 +82,7 @@ fn main() {
             process::exit(0);
         }
     }
+    let output_dir = normalize_and_create_if_needed(args.output.clone().unwrap());
 
     combine_multichapter_videos(
         multichapter_videos_sorted.clone(),
