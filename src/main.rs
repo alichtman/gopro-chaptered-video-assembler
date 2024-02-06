@@ -26,8 +26,9 @@ fn main() {
     initialize_logging();
     print_header();
     let args = CliArgs::parse();
+    print!("{:#?}", args);
 
-    // Canonicalize input path up front. We don't handle the output path until later to avoid creating the output path if the user cancels the operation. 
+    // Canonicalize input path up front. We don't handle the output path until later to avoid creating the output path if the user cancels the operation.
     let input_dir = args
         .input
         .clone()
@@ -35,7 +36,7 @@ fn main() {
         .canonicalize()
         .expect("Could not canonicalize input dir path. Does it exist?");
 
-   actually_do_things_with_input_and_output_paths(input_dir, args);
+    actually_do_things_with_input_and_output_paths(input_dir, args);
 }
 
 fn actually_do_things_with_input_and_output_paths(input_dir: PathBuf, args: CliArgs) {
@@ -73,7 +74,7 @@ fn actually_do_things_with_input_and_output_paths(input_dir: PathBuf, args: CliA
     print_expected_output(
         single_chapter_videos.clone(),
         multichapter_videos_sorted.clone(),
-        args.no_single_chapter_rename.clone(),
+        args.copy_single_chapter_instead_of_renaming.clone(),
     );
     match get_confirmation_before_proceeeding(args.auto_confirm_yes) {
         true => (),
@@ -90,9 +91,11 @@ fn actually_do_things_with_input_and_output_paths(input_dir: PathBuf, args: CliA
         args.clone(),
     );
 
-    if args.no_single_chapter_rename {
-        info!("Skipping single chapter rename");
+    if args.copy_single_chapter_instead_of_renaming {
+        print!("Copying single chapter videos instead of renaming");
+        copy_single_chapter_videos(single_chapter_videos, output_dir, args.clone());
     } else {
+        print!("Renaming single chapter videos");
         rename_single_chapter_videos(single_chapter_videos, output_dir, args.clone());
     }
 
@@ -101,6 +104,8 @@ fn actually_do_things_with_input_and_output_paths(input_dir: PathBuf, args: CliA
         print_remove_commands(multichapter_videos_sorted);
     }
 }
+
+// There's some needless code duplication here. Could be cleaner
 
 fn rename_single_chapter_videos(
     single_chapter_videos: std::collections::HashMap<u16, Vec<GoProChapteredVideoFile>>,
@@ -121,6 +126,29 @@ fn rename_single_chapter_videos(
             continue;
         } else {
             rename(video_path, output_path).expect("Failed to rename file");
+        }
+    }
+}
+
+fn copy_single_chapter_videos(
+    single_chapter_videos: std::collections::HashMap<u16, Vec<GoProChapteredVideoFile>>,
+    output_dir: PathBuf,
+    args: CliArgs,
+) {
+    for video in single_chapter_videos {
+        let video_number = video.0;
+        let video_path = video.1[0].abs_path.clone();
+        let output_path = gen_output_path(&output_dir, video_number, "mp4");
+        info!(
+            "Copying {} to {}",
+            video_path.to_string_lossy().green().bold(),
+            output_path.to_string_lossy().blue().bold()
+        );
+        if args.dry_run {
+            info!("Dry run, skipping copy!");
+            continue;
+        } else {
+            std::fs::copy(video_path, output_path).expect("Failed to copy file");
         }
     }
 }

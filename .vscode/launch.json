@@ -1,69 +1,81 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug in test",
-            "cargo": {
-                "args": [
-                    "build",
-                    "--bin=gopro-chaptered-video-assembler",
-                    "--package=gopro-chaptered-video-assembler"
-                ],
-                "filter": {
-                    "name": "gopro-chaptered-video-assembler",
-                    "kind": "bin"
-                }
-            },
-            "args": ["-i", "tests/working_test_data", "-o", "tests/output"],
-            "cwd": "${workspaceFolder}",
-            "env": {
-                "RUST_BACKTRACE": "1"
-            }
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug in apostrophe",
-            "cargo": {
-                "args": [
-                    "build",
-                    "--bin=gopro-chaptered-video-assembler",
-                    "--package=gopro-chaptered-video-assembler"
-                ],
-                "filter": {
-                    "name": "gopro-chaptered-video-assembler",
-                    "kind": "bin"
-                }
-            },
-            "args": ["-i", "tests/working_test_data/Test's Apostrophe", "-o", "tests/output"],
-            "cwd": "${workspaceFolder}",
-            "env": {
-                "RUST_BACKTRACE": "1"
-            }
-        },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug unit tests in executable 'gopro-chaptered-video-assembler'",
-            "cargo": {
-                "args": [
-                    "test",
-                    "--no-run",
-                    "--bin=gopro-chaptered-video-assembler",
-                    "--package=gopro-chaptered-video-assembler"
-                ],
-                "filter": {
-                    "name": "gopro-chaptered-video-assembler",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug in test",
+      "cargo": {
+        "args": [
+          "build",
+          "--bin=gopro-chaptered-video-assembler",
+          "--package=gopro-chaptered-video-assembler"
+        ],
+        "filter": {
+          "name": "gopro-chaptered-video-assembler",
+          "kind": "bin"
         }
-    ]
+      },
+      "args": [
+        "--input",
+        "/home/alichtman/Desktop/Development/projects/gopro-chaptered-video-assembler/tests/data/real_videos",
+        "--output",
+        "/home/alichtman/Desktop/Development/projects/gopro-chaptered-video-assembler/tests/data/actual_output",
+        "--yes",
+        "--copy-single-chapter-instead-of-rename"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "RUST_BACKTRACE": "full"
+      }
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug in apostrophe",
+      "cargo": {
+        "args": [
+          "build",
+          "--bin=gopro-chaptered-video-assembler",
+          "--package=gopro-chaptered-video-assembler"
+        ],
+        "filter": {
+          "name": "gopro-chaptered-video-assembler",
+          "kind": "bin"
+        }
+      },
+      "args": [
+        "-i",
+        "tests/working_test_data/Test's Apostrophe",
+        "-o",
+        "tests/output"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "RUST_BACKTRACE": "1"
+      }
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in executable 'gopro-chaptered-video-assembler'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--bin=gopro-chaptered-video-assembler",
+          "--package=gopro-chaptered-video-assembler"
+        ],
+        "filter": {
+          "name": "gopro-chaptered-video-assembler",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
 }
