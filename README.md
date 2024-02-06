@@ -38,13 +38,13 @@ The file names aren't the most user friendly. The most common thing I do before 
 
 ## How?
 
-This tool combines multi-chapter videos using the [`ffmpeg concat demuxer`](https://stackoverflow.com/a/11175851) and renames single chapter videos so the filenames can be parsed more easily. You can disable the single chapter renaming behavior with `--no-single-chapter-rename`. If a multi-chapter merge operation is done, a set of commands will be printed at the end to clean up the original source directory. These commands are destructive, and have to be run manually.
+This tool combines multi-chapter videos using [`mp4-merge`](https://github.com/gyroflow/mp4-merge) and renames single chapter videos so the filenames can be parsed more easily. You can disable the single chapter renaming behavior with `--no-single-chapter-rename`. If a multi-chapter merge operation is done, a set of commands will be printed at the end to clean up the original source directory. These commands are destructive, and therefore need to be run manually.
 
 All output files will have the form: `GoPro_{video_number}.MP4`.
 
 ## Installation
 
-This package is available on [`crates.io`](https://crates.io/crates/gopro-chaptered-video-assembler). 
+This package is available on [`crates.io`](https://crates.io/crates/gopro-chaptered-video-assembler).
 
 ```bash
 $ cargo install gopro-chaptered-video-assembler

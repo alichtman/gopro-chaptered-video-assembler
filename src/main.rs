@@ -1,12 +1,12 @@
 #![feature(path_file_prefix)]
 
 mod cli;
-mod ffmpeg;
+mod multichapter_merging;
 mod filesystem;
 mod gopro;
 mod logging;
 mod printing;
-use crate::ffmpeg::combine_multichapter_videos;
+use crate::multichapter_merging::combine_multichapter_videos;
 use crate::gopro::{gen_output_path, GoProChapteredVideoFile};
 use crate::logging::initialize_logging;
 use crate::printing::{get_confirmation_before_proceeeding, print_expected_output, print_header};
@@ -85,11 +85,7 @@ fn actually_do_things_with_input_and_output_paths(input_dir: PathBuf, args: CliA
     }
     let output_dir = normalize_and_create_if_needed(args.output.clone().unwrap());
 
-    combine_multichapter_videos(
-        multichapter_videos_sorted.clone(),
-        output_dir.clone(),
-        args.clone(),
-    );
+    combine_multichapter_videos(multichapter_videos_sorted.clone(), output_dir.clone());
 
     if args.copy_single_chapter_instead_of_renaming {
         print!("Copying single chapter videos instead of renaming");
