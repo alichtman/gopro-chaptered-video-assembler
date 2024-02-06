@@ -71,8 +71,6 @@ pub fn print_expected_output(
             single_chapter_videos.len().to_string().blue().bold()
         );
     }
-
-    // TODO: Make sure chapter keys are unique. panic if they aren't
 }
 
 pub fn print_remove_commands(

@@ -8,8 +8,8 @@ The general format is:
 
 ```bash
 GXYYZZZZ.mp4, where:
- X is the encoding type (X for HEVC, H for AVC .... yes... I know)
-  YY is the chapter number
+ X       is the encoding type (X for HEVC, H for AVC .... yes... I know)
+  YY     is the chapter number
     ZZZZ is the video number
 ```
 
@@ -49,6 +49,18 @@ This package is available on [`crates.io`](https://crates.io/crates/gopro-chapte
 ```bash
 $ cargo install gopro-chaptered-video-assembler
 ```
+
+### Building and Installing Source
+
+```
+$ git clone https://github.com/alichtman/gopro-chaptered-video-assembler
+$ cd gopro-chaptered-video-assembler
+$ cargo build
+$ cargo run -- [ARGUMENTS]
+$ cargo install --path .
+```
+
+Debugging in VSCode works well.
 
 ## Example Usage
 
