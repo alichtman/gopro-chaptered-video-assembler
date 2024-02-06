@@ -26,7 +26,7 @@ fn main() {
     initialize_logging();
     print_header();
     let args = CliArgs::parse();
-    print!("{:#?}", args);
+    // print!("{:#?}", args);
 
     // Canonicalize input path up front. We don't handle the output path until later to avoid creating the output path if the user cancels the operation.
     let input_dir = args

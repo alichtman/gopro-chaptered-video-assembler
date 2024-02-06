@@ -65,14 +65,11 @@ Debugging in VSCode works well.
 ## Example Usage
 
 ```bash
-$ gopro-chaptered-video-assembler --input "/media/alichtman/Extreme SSD/Rock-Climbing/Gunks/High Exposure/" --output combined
+$ gopro-chaptered-video-assembler --input "/media/alichtman/Extreme SSD/Rock-Climbing/Gunks/High Exposure/" --output output
 ╔═══════════════════════════════════════╗
-║ gopro-chaptered-video-assembler 0.4.0 ║
+║ gopro-chaptered-video-assembler 0.5.1 ║
 ╚═══════════════════════════════════════╝
-01:49:33 [INFO] combined directory does not exist, attempting to create it now...
-01:49:33 [INFO] /media/alichtman/Extreme SSD/Rock-Climbing/Gunks/High Exposure/combined directory exists, using it...
 01:49:33 [INFO] Found 39 files in directory: /media/alichtman/Extreme SSD/Rock-Climbing/Gunks/High Exposure
-01:49:33 [WARN] Failed to parse GoPro video file: combined is a directory
 01:49:33 [INFO] Found 5 video(s) with 11 total chapters to combine
 01:49:33 [INFO] {
     7515: [
@@ -146,7 +143,7 @@ Proceed? (y/n)
 ...
 ```
 
-The `combined` directory will be created in the current directory, and all output files will be found there.
+The `output` directory will be created in the current directory, and all output files will be found there.
 
 Additionally, paths with apostrophes (and theoretically other special characters) are supported:
 
