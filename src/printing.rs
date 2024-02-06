@@ -53,7 +53,7 @@ pub fn print_expected_output(
         total_chapters_to_combine += value.len();
     }
     info!(
-        "Found {} video(s) with {} total chapters to combine",
+        "These make up {} video(s), with {} total chapters to combine",
         total_videos_to_output.to_string().blue().bold(),
         total_chapters_to_combine.to_string().blue().bold()
     );

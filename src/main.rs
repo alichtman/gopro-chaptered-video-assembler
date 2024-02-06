@@ -59,7 +59,7 @@ fn actually_do_things_with_input_and_output_paths(input_dir: PathBuf, args: CliA
     let videos = parse_gopro_files_directory(input_files);
 
     // TODO: Ensure all videos are valid mp4s. (#10)
-    println!("{:?}", videos);
+    // println!("{:?}", videos);
 
     // Sort the videos by video number, preparing them to be "concat demuxed" by ffmpeg https://stackoverflow.com/a/11175851
     let mut multichapter_videos_sorted = gopro::sort_gopro_files(videos);
