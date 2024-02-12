@@ -1,14 +1,14 @@
 #![feature(path_file_prefix)]
 
 mod cli;
-mod multichapter_merging;
 mod filesystem;
 mod gopro;
 mod logging;
+mod multichapter_merging;
 mod printing;
-use crate::multichapter_merging::combine_multichapter_videos;
 use crate::gopro::{gen_output_path, GoProChapteredVideoFile};
 use crate::logging::initialize_logging;
+use crate::multichapter_merging::combine_multichapter_videos;
 use crate::printing::{get_confirmation_before_proceeeding, print_expected_output, print_header};
 use std::fs::rename;
 
