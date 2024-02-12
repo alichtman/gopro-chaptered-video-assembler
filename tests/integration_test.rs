@@ -45,6 +45,13 @@ pub(crate) fn teardown() {
     }
 }
 
+pub(crate) fn print_directory_contents(dir: &PathBuf) {
+    let paths = fs::read_dir(dir).unwrap();
+    for path in paths {
+        println!("{:?}", path.unwrap().path());
+    }
+}
+
 #[test]
 fn test_run_on_dir() {
     self::setup();
@@ -57,9 +64,12 @@ fn test_run_on_dir() {
         .arg("--copy-single-chapter-instead-of-rename");
     let output = cmd.unwrap();
     print!("{:#?}", output);
+    print!("\n#### Actual output directory contents: ");
+    print_directory_contents(&get_path_to_test_output());
     // Check that actual_output matches expected_output
     let expected_output_hash = get_hash_of_directory(&get_path_to_expected_output());
     let actual_output_hash = get_hash_of_directory(&get_path_to_test_output());
+
     assert!(expected_output_hash == actual_output_hash);
     print!(
         "\n{:#?} was the merkle hash for both the expected and actual",
