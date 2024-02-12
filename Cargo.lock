@@ -129,6 +129,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "byteorder"
+version = "1.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
+
+[[package]]
 name = "camino"
 version = "1.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -276,6 +282,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "filetime_creation"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4d273b12293b73b44ab8a525e161f74ebe2f38dd50c33ce7f538a4ccf9077383"
+dependencies = [
+ "cfg-if",
+ "filetime",
+ "windows-sys 0.52.0",
+]
+
+[[package]]
 name = "float-cmp"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -312,6 +329,7 @@ dependencies = [
  "fs_extra",
  "log",
  "merkle_hash",
+ "mp4-merge",
  "normpath",
  "predicates",
  "simplelog",
@@ -365,6 +383,17 @@ dependencies = [
  "blake3",
  "camino",
  "rayon",
+]
+
+[[package]]
+name = "mp4-merge"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0224cd4e86031506b998180ee884afa26308155cb65f90888fa560ec72281ff8"
+dependencies = [
+ "byteorder",
+ "filetime_creation",
+ "log",
 ]
 
 [[package]]
