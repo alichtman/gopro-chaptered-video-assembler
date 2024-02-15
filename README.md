@@ -1,10 +1,30 @@
 # GoPro Chaptered Video Assembler
 
+**TL;DR: Work with your GoPro files as you recorded them, not as the camera stored them.**
+
+## Quickstart
+
+```
+# Install from cargo
+$ cargo install gopro-chaptered-video-assembler
+
+# Run the tool
+$ gopro-chaptered-video-assembler --input PATH --output PATH
+```
+
 ## Why does this exist?
+
+I've been using my GoPro to record videos for years. I shoot a lot of long-form climbing and mountain videos. Any video longer than a few minutes gets split into multiple files, which are unpleasant to deal with when it's time to edit. It's a tedious and time-consuming process to reassemble the videos, and I'd rather spend my time doing literally anything else.
+
+So I wrote a Rust tool to reassemble them for me. 
+
+It is easy to use, lossless (thanks to [`mp4-merge`](https://github.com/gyroflow/mp4-merge)), built with user safety in mind (will never delete your data without asking), and has integration tests.
+
+## How does it work?
 
 When you record long-form videos on a GoPro, the videos get split into `~4GB` chunks. In the [file naming conventions spec](https://community.gopro.com/s/article/GoPro-Camera-File-Naming-Convention?language=en_US), GoPro refers to these as chaptered video files.
 
-The general format is:
+The naming scheme is:
 
 ```bash
 GXYYZZZZ.mp4, where:
@@ -17,30 +37,36 @@ Here is an example directory structure for a single GoPro video (about ~10min lo
 
 ```bash
 gopro-chaptered-video-example/
-├── GX010119.MP4 [Video 1, chapter 1]
-├── GX020119.MP4 [Video 1, chapter 2]
-└── GX030119.MP4 [Video 1, chapter 3]
+├── GX010119.MP4 [Video 0119, chapter 1]
+├── GX020119.MP4 [Video 0119, chapter 2]
+└── GX030119.MP4 [Video 0119, chapter 3]
 ```
 
 Here's an example directory structure with multiple chaptered videos.
 
 ```bash
 gopro-multiple-chaptered-videos-example/
-├── GH017455.MP4 [Video 1, chapter 1]
-├── GH017456.MP4 [Video 2, chapter 1]
-├── GH017457.MP4 [Video 3, chapter 1]
-├── GH027455.MP4 [Video 1, chapter 2]
-├── GH027456.MP4 [Video 2, chapter 2]
-└── GH037455.MP4 [Video 3, chapter 2]
+├── GH017455.MP4 [Video 7455, chapter 1]
+├── GH017456.MP4 [Video 7456, chapter 1]
+├── GH017457.MP4 [Video 7457, chapter 1]
+├── GH027455.MP4 [Video 7455, chapter 2]
+├── GH027456.MP4 [Video 7456, chapter 2]
+└── GH037455.MP4 [Video 7455, chapter 2]
 ```
 
-The file names aren't the most user friendly. The most common thing I do before editing my videos is manually reassemble the "long-form" videos in `Adobe Premiere Pro` or `Kdenlive`. This tool saves me a ton of time.
+Instead of thinking about _which-video-goes-where_ myself, I outsource it to this tool.
 
-## How?
+## So what does the tool give you?
 
-This tool combines multi-chapter videos using [`mp4-merge`](https://github.com/gyroflow/mp4-merge) and renames single chapter videos so the filenames can be parsed more easily. You can disable the single chapter renaming behavior with `--no-single-chapter-rename`. If a multi-chapter merge operation is done, a set of commands will be printed at the end to clean up the original source directory. These commands are destructive, and therefore need to be run manually.
+One single output directory that contains your GoPro footage, with easy filenames. All output files will have the form: `GoPro_{video_number}.MP4`.
 
-All output files will have the form: `GoPro_{video_number}.MP4`.
+### For Multichapter Videos...
+
+It finds and combines multi-chapter videos using [`mp4-merge`](https://github.com/gyroflow/mp4-merge). If a multi-chapter merge operation is done, a set of commands will be printed at the end to clean up the original source directory. These commands are destructive, and therefore need to be run manually.
+
+### For Single Chapter Videos...
+
+It renames, or copies (if you use `--no-single-chapter-rename`), single chapter videos.
 
 ## Installation
 
@@ -55,8 +81,14 @@ $ cargo install gopro-chaptered-video-assembler
 ```
 $ git clone https://github.com/alichtman/gopro-chaptered-video-assembler
 $ cd gopro-chaptered-video-assembler
+
+# Compile
 $ cargo build
+
+# Run dev build
 $ cargo run -- [ARGUMENTS]
+
+# Install to machine
 $ cargo install --path .
 ```
 
@@ -143,9 +175,9 @@ Proceed? (y/n)
 ...
 ```
 
-The `output` directory will be created in the current directory, and all output files will be found there.
+The `output` directory will be created (in the current directory if a relative path is given, or at an absolute path otherwise), and all output files will be found there.
 
-Additionally, paths with apostrophes (and theoretically other special characters) are supported:
+Additionally, paths with apostrophes (and other special characters) are supported:
 
 ```bash
 $ gopro-chaptered-video-assembler -i "tests/working_test_data/Test\'s Apostrophe"  -o tests/output
