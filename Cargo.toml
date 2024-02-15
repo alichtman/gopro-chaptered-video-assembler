@@ -9,6 +9,7 @@ homepage = "https://github.com/alichtman/gopro-chaptered-video-assembler"
 repository = "https://github.com/alichtman/gopro-chaptered-video-assembler"
 readme = "README.md"
 keywords = ["gopro", "video", "assembler", "chaptered", "ffmpeg"]
+exclude = ["tests/data"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
