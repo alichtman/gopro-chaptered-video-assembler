@@ -42,19 +42,9 @@ gopro-chaptered-video-example/
 └── GX030119.MP4 [Video 0119, chapter 03]
 ```
 
-Here's an example directory structure with multiple chaptered videos.
+Here's an example directory structure with multiple chaptered videos. You can see how this would get complicated quickly. Instead of thinking about _which-video-goes-where_ myself, I outsource it to this tool.
 
-```bash
-gopro-multiple-chaptered-videos-example/
-├── GH017455.MP4 [Video 7455, chapter 01]
-├── GH017456.MP4 [Video 7456, chapter 01]
-├── GH017457.MP4 [Video 7457, chapter 01]
-├── GH027455.MP4 [Video 7455, chapter 02]
-├── GH027456.MP4 [Video 7456, chapter 02]
-└── GH037457.MP4 [Video 7457, chapter 02]
-```
-
-Instead of thinking about _which-video-goes-where_ myself, I outsource it to this tool.
+![](assets/Example.drawio.png)
 
 ## So what does the tool give you?
 
