@@ -4,7 +4,7 @@
 
 ## Quickstart
 
-```
+```bash
 # Install from cargo
 $ cargo install gopro-chaptered-video-assembler
 
@@ -37,21 +37,21 @@ Here is an example directory structure for a single GoPro video (about ~10min lo
 
 ```bash
 gopro-chaptered-video-example/
-├── GX010119.MP4 [Video 0119, chapter 1]
-├── GX020119.MP4 [Video 0119, chapter 2]
-└── GX030119.MP4 [Video 0119, chapter 3]
+├── GX010119.MP4 [Video 0119, chapter 01]
+├── GX020119.MP4 [Video 0119, chapter 02]
+└── GX030119.MP4 [Video 0119, chapter 03]
 ```
 
 Here's an example directory structure with multiple chaptered videos.
 
 ```bash
 gopro-multiple-chaptered-videos-example/
-├── GH017455.MP4 [Video 7455, chapter 1]
-├── GH017456.MP4 [Video 7456, chapter 1]
-├── GH017457.MP4 [Video 7457, chapter 1]
-├── GH027455.MP4 [Video 7455, chapter 2]
-├── GH027456.MP4 [Video 7456, chapter 2]
-└── GH037455.MP4 [Video 7455, chapter 2]
+├── GH017455.MP4 [Video 7455, chapter 01]
+├── GH017456.MP4 [Video 7456, chapter 01]
+├── GH017457.MP4 [Video 7457, chapter 01]
+├── GH027455.MP4 [Video 7455, chapter 02]
+├── GH027456.MP4 [Video 7456, chapter 02]
+└── GH037457.MP4 [Video 7457, chapter 02]
 ```
 
 Instead of thinking about _which-video-goes-where_ myself, I outsource it to this tool.
