@@ -1,6 +1,6 @@
 # GoPro Chaptered Video Assembler
 
-**TL;DR: Work with your GoPro files as you recorded them, not as the camera stored them.**
+**TL;DR: GoPro breaks long videos into multiple files. This utility stitches them back together.**
 
 ## Quickstart
 
@@ -18,7 +18,7 @@ I've been using my GoPro to record videos for years. I shoot a lot of long-form 
 
 So I wrote a Rust tool to reassemble them for me. 
 
-It is easy to use, lossless (thanks to [`mp4-merge`](https://github.com/gyroflow/mp4-merge)), built with user safety in mind (will never delete your data without asking), and has integration tests.
+It is easy to use, lossless (thanks to [`mp4-merge`](https://github.com/gyroflow/mp4-merge)), built with user safety in mind (will never delete your data without asking), and has an integration test that uses real GoPro videos.
 
 ## How does it work?
 
@@ -42,9 +42,11 @@ gopro-chaptered-video-example/
 └── GX030119.MP4 [Video 0119, chapter 03]
 ```
 
-Here's an example directory structure with multiple chaptered videos. You can see how this would get complicated quickly. Instead of thinking about _which-video-goes-where_ myself, I outsource it to this tool.
+Here's an example directory structure with multiple chaptered videos.
 
 ![](assets/Example.drawio.png)
+
+You can see how this gets complicated quickly. Instead of thinking about _which-video-goes-where_ myself, I use this tool.
 
 ## So what does the tool give you?
 
