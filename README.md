@@ -14,11 +14,22 @@ $ gopro-chaptered-video-assembler --input PATH --output PATH
 
 ## Why does this exist?
 
-I've been using my GoPro to record videos for years. I shoot a lot of long-form climbing and mountain videos. Any video longer than a few minutes gets split into multiple files, which are unpleasant to deal with when it's time to edit. It's a tedious and time-consuming process to reassemble the videos, and I'd rather spend my time doing literally anything else.
+I've been using my GoPro to record videos for years. I shoot a lot of long-form climbing and mountain videos. Any video longer than a few minutes gets split into multiple files, which are unpleasant to deal with when it's time to edit. It's a tedious and time-consuming process to reassemble the videos. Here's an example of the output structure for multiple long videos:
 
-So I wrote a Rust tool to reassemble them for me. 
+![](assets/Example.drawio.png)
 
-It is easy to use, lossless (thanks to [`mp4-merge`](https://github.com/gyroflow/mp4-merge)), built with user safety in mind (will never delete your data without asking), and has an integration test that uses real GoPro videos.
+Figuring out _which video goes where_ did not spark joy. So, I wrote a Rust tool to do it for me.
+
+It is:
+
+- Easy to use
+- Lossless (thanks to [`mp4-merge`](https://github.com/gyroflow/mp4-merge))
+- Built with user safety in mind (will never delete your data without asking)
+- And has an integration test that uses real GoPro videos
+
+### Why can't you just sort the files by last modified time?
+
+Not all video editors support sorting this way in the native file selector dialog. It's great that you can do this in the file explorer, but you still have a problem at edit time.
 
 ## How does it work?
 
@@ -42,21 +53,21 @@ gopro-chaptered-video-example/
 └── GX030119.MP4 [Video 0119, chapter 03]
 ```
 
-Here's an example directory structure with multiple chaptered videos.
+And here's that example with multiple chaptered videos.
 
 ![](assets/Example.drawio.png)
 
-You can see how this gets complicated quickly. Instead of thinking about _which-video-goes-where_ myself, I use this tool.
+You can see how this gets complicated quickly.
 
-## So what does the tool give you?
+### This tool gives you one single output directory with your GoPro footage
 
-One single output directory that contains your GoPro footage, with easy filenames. All output files will have the form: `GoPro_{video_number}.MP4`.
+All output files will have the form: `GoPro_{video_number}.MP4`.
 
-### For Multichapter Videos...
+#### For Multichapter Videos...
 
 It finds and combines multi-chapter videos using [`mp4-merge`](https://github.com/gyroflow/mp4-merge). If a multi-chapter merge operation is done, a set of commands will be printed at the end to clean up the original source directory. These commands are destructive, and therefore need to be run manually.
 
-### For Single Chapter Videos...
+#### For Single Chapter Videos...
 
 It renames, or copies (if you use `--no-single-chapter-rename`), single chapter videos.
 
