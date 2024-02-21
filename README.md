@@ -1,6 +1,6 @@
 # GoPro Chaptered Video Assembler
 
-**TL;DR: GoPro breaks long videos into multiple files. This utility stitches them back together.**
+**GoPro breaks long videos into multiple files. This utility stitches them back together.**
 
 ## Quickstart
 
@@ -9,16 +9,16 @@
 $ cargo install gopro-chaptered-video-assembler
 
 # Run the tool
-$ gopro-chaptered-video-assembler --input PATH --output PATH
+$ gopro-chaptered-video-assembler --input PATH_TO_DIRECTORY_WITH_GOPRO_FILES --output PATH_TO_OUTPUT_DIRECTORY
 ```
 
 ## Why does this exist?
 
-I've been using my GoPro to record videos for years. I shoot a lot of long-form climbing and mountain videos. Any video longer than a few minutes gets split into multiple files, which are unpleasant to deal with when it's time to edit. It's a tedious and time-consuming process to reassemble the videos. Here's an example of the output structure for multiple long videos:
+I shoot a lot of long-form videos on my GoPro. Any video longer than a few minutes gets split into multiple files. These are unpleasant to deal with when it's time to edit -- it's tedious and time-consuming to reassemble them. Here's an example of the output structure for multiple long videos:
 
 ![](assets/Example.drawio.png)
 
-Figuring out _which video goes where_ did not spark joy. So, I wrote a Rust tool to do it for me.
+Figuring out _which video goes where_ did not spark joy. So, this tool does it for me.
 
 It is:
 
@@ -27,9 +27,10 @@ It is:
 - Built with user safety in mind (will never delete your data without asking)
 - And has an integration test that uses real GoPro videos
 
-### Why can't you just sort the files by last modified time?
+### Why can't you sort the files by creation time in the video editor?
 
-Not all video editors support sorting this way in the native file selector dialog. It's great that you can do this in the file explorer, but you still have a problem at edit time.
+- Not all video editors conveniently support this workflow. [Here's how you do this in Premiere Pro](https://www.youtube.com/watch?v=J-qcGNaneMc). It's not exactly a one-click operation.
+- When I recorded the footage, the chaptered video files were one continuous clip. So I should be working with them as one file.
 
 ## How does it work?
 
@@ -188,6 +189,8 @@ $ gopro-chaptered-video-assembler -i "tests/working_test_data/Test\'s Apostrophe
 ```
 
 ## Which GoPro models are supported?
+
+Any GoPro model that uses the GoPro file format linked above should be supported. This includes:
 
 - HERO11 Black / Black Mini
 - HERO10 Black
