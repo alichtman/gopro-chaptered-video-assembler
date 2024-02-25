@@ -62,7 +62,7 @@ fn actually_do_things_with_input_and_output_paths(input_dir: PathBuf, args: CliA
     // TODO: Ensure all videos are valid mp4s. (#10)
     // println!("{:?}", videos);
 
-    // Sort the videos by video number, preparing them to be "concat demuxed" by ffmpeg https://stackoverflow.com/a/11175851
+    // Sort the videos by video number, preparing them to be combined by mp4-merge
     let mut multichapter_videos_sorted = gopro::sort_gopro_files(videos);
     // Filter out videos that only have one chapter to be renamed separately
     let mut single_chapter_videos = multichapter_videos_sorted.clone();
