@@ -30,7 +30,7 @@ It is:
 ### Why can't you sort the files by creation time in the video editor?
 
 - Not all video editors conveniently support this workflow. [Here's how you do this in Premiere Pro](https://www.youtube.com/watch?v=J-qcGNaneMc). It's not exactly a one-click operation.
-- When I recorded the footage, the chaptered video files were one continuous clip. So I should be working with them as one file.
+- Even if this were easy to do, it's the wrong mental model for the clips. When you record the footage, it's one continuous clip. So you should be working with it as one file, too.
 
 ## How does it work?
 
