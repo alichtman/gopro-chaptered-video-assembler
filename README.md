@@ -25,7 +25,8 @@ It is:
 - Easy to use
 - Lossless (thanks to [`mp4-merge`](https://github.com/gyroflow/mp4-merge))
 - Built with user safety in mind (will never delete your data without asking)
-- And has an integration test that uses real GoPro videos
+- End-to-end tested with real GoPro videos
+- Compatible with Linux, macOS, and Windows
 
 ### Why can't you sort the files by creation time in the video editor?
 
