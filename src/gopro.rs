@@ -136,6 +136,11 @@ pub fn sort_gopro_files(
             .push(video);
     }
 
+    // Sort chapters within each video group by chapter number
+    for chapters in video_number_to_subvideos_mapping.values_mut() {
+        chapters.sort_by_key(|c| c.chapter);
+    }
+
     video_number_to_subvideos_mapping
 }
 
