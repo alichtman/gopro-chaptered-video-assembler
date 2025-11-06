@@ -48,7 +48,7 @@ pub(crate) fn teardown() {
 #[test]
 fn test_run_on_dir() {
     self::setup();
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = Command::new(assert_cmd::cargo::cargo_bin!(env!("CARGO_PKG_NAME")));
     cmd.arg("--input")
         .arg(get_path_to_source_videos())
         .arg("--output")

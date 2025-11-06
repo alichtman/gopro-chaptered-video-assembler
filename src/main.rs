@@ -1,5 +1,3 @@
-#![feature(path_file_prefix)]
-
 mod cli;
 mod filesystem;
 mod gopro;
